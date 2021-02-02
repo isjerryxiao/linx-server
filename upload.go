@@ -347,7 +347,8 @@ func generateBarename() string {
 }
 
 func generateJSONresponse(upload Upload, r *http.Request) []byte {
-	js, _ := json.Marshal(map[string]string{
+	js, _ := json.MarshalIndent(
+		map[string]string{
 		"url":        getSiteURL(r) + upload.Filename,
 		"direct_url": getSiteURL(r) + Config.selifPath + upload.Filename,
 		"filename":   upload.Filename,
@@ -357,9 +358,12 @@ func generateJSONresponse(upload Upload, r *http.Request) []byte {
 		"size":       strconv.FormatInt(upload.Metadata.Size, 10),
 		"mimetype":   upload.Metadata.Mimetype,
 		"sha256sum":  upload.Metadata.Sha256sum,
-	})
+		},
+		"",
+		"  ",
+	)
 
-	return js
+	return append(js, '\n')
 }
 
 var bareRe = regexp.MustCompile(`[^A-Za-z0-9\-]`)
